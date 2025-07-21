@@ -371,4 +371,3 @@ test-suite chess-glfw
     , vector
     , unified-audio-hs
     , unified-audio-hs:sdl-impl
-    , unified-audio-hs:fmod-impl

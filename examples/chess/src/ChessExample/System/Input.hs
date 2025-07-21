@@ -66,7 +66,7 @@ process meshFactory input sounds initState = do
                 Update game command : _ -> do
                   Player.play meshFactory command
                   Referee.judge game
-                  _ <- Audio.play sounds.pickPiece
+                  _ <- Audio.play sounds.playPiece
                   pure state { game = game }
         -- Right click -> Activate rotation mode.
         MouseEvent cursor Mouse'Right Mouse'Pressed _ ->
