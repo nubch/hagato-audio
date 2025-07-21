@@ -8,25 +8,19 @@ import UnifiedAudio.Effectful
 data Sounds h = Sounds { 
     music      :: h 'Loaded,
     pickPiece  :: h 'Loaded,
-    placePiece :: h 'Loaded,
-    undoMove   :: h 'Loaded,
-    win        :: h 'Loaded,
-    lose       :: h 'Loaded
+    slayPiece :: h 'Loaded,
+    win        :: h 'Loaded
     }
 
 initSounds :: (Audio h :> es) => Eff es (Sounds h)
 initSounds = do 
-    music <- load "../assets/music.mp3"
-    pickPiece <- load "../assets/pickPiece.mp3"
-    placePiece <- load "../assets/placePiece.mp3"
-    undoMove <- load "../assets/undoMove.mp3"
-    win <- load "../assets/win.mp3"
-    lose <- load "../assets/lose.mp3"
+    music <- load "examples/chess/assets/sounds/music.mp3"
+    pickPiece <- load "examples/chess/assets/sounds/pickPiece.mp3"
+    slayPiece <- load "examples/chess/assets/sounds/slayPiece.mp3"
+    win <- load "examples/chess/assets/sounds/win.mp3"
     pure $ Sounds 
         { music = music
         , pickPiece = pickPiece
-        , placePiece = placePiece
-        , undoMove = undoMove
+        , slayPiece = slayPiece
         , win = win
-        , lose = lose
         }

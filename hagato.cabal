@@ -342,6 +342,7 @@ library chess
     , text
     , vector
     , unified-audio-hs
+    , unified-audio-hs:sdl-impl
   ghc-options:
       -fplugin=Effectful.Plugin
 
@@ -369,3 +370,5 @@ test-suite chess-glfw
     , resource-effectful
     , vector
     , unified-audio-hs
+    , unified-audio-hs:sdl-impl
+    , unified-audio-hs:fmod-impl

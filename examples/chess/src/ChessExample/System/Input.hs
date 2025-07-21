@@ -49,7 +49,6 @@ process meshFactory input sounds initState = do
             Just (Update game command) -> do
               Player.play meshFactory (undo command)
               Referee.judge game
-              Audio.play sounds.undoMove
               pure state { game = game }
         -- Left click -> Play chess by selecting pieces and committing moves.
         MouseEvent cursor Mouse'Left Mouse'Pressed _  -> do
@@ -58,7 +57,6 @@ process meshFactory input sounds initState = do
             Nothing  -> pure state
             Just pos -> do
               updates <- Player.select standardRulebook state.game pos
-              Audio.play sounds.pickPiece
               -- To keep it simple, we always play the first game update. If we
               -- have multiple possible updates (e.g., options for promoting a piece),
               -- we would need some user involvement for selecting one -> TODO.
@@ -68,6 +66,7 @@ process meshFactory input sounds initState = do
                 Update game command : _ -> do
                   Player.play meshFactory command
                   Referee.judge game
+                  _ <- Audio.play sounds.pickPiece
                   pure state { game = game }
         -- Right click -> Activate rotation mode.
         MouseEvent cursor Mouse'Right Mouse'Pressed _ ->
