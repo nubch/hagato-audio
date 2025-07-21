@@ -308,6 +308,7 @@ library chess
       ChessExample.Component.Transform
       ChessExample.Game
       ChessExample.GameState
+      ChessExample.Sound
       ChessExample.System.Animator
       ChessExample.System.Artist
       ChessExample.System.Asset
@@ -340,6 +341,7 @@ library chess
     , resource-effectful
     , text
     , vector
+    , unified-audio-hs
   ghc-options:
       -fplugin=Effectful.Plugin
 
@@ -366,3 +368,4 @@ test-suite chess-glfw
     , hagato:with-vulkan
     , resource-effectful
     , vector
+    , unified-audio-hs

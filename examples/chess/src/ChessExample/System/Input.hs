@@ -18,6 +18,7 @@ import Hagato.Core.Math.Vec2 (y)
 -- effectful-core
 import Effectful (Eff, (:>))
 
+import ChessExample.Sound            
 import ChessExample.Component.Mesh   (MeshFactory)
 import ChessExample.GameState        (GameState(game, done))
 import ChessExample.System.Animator  qualified as Animator
@@ -26,11 +27,13 @@ import ChessExample.System.Player    qualified as Player
 import ChessExample.System.Referee   qualified as Referee
 import ChessExample.System.World     (World)
 
+import UnifiedAudio.Effectful        qualified as Audio
+
 -- The input system maps the input of the window (keyboard, mouse, etc.) to the
 -- game state, thus creating a new game state. It does this by delegating the work
 -- to other systems depending on the input.
-process :: ECS World :> es => MeshFactory -> Input -> GameState -> Eff es GameState
-process meshFactory input initState = do
+process :: (ECS World :> es, Audio.Audio s :> es) => MeshFactory -> Input -> Sounds s -> GameState -> Eff es GameState
+process meshFactory input sounds initState = do
   Director.moveCursor input.cursor
   foldM handle initState input.events
     where
@@ -41,11 +44,12 @@ process meshFactory input initState = do
         -- Backspace -> Take back last move.
         KeyEvent Key'Backspace _ Key'Pressed _ ->
           case state.game.lastUpdate of
-            Nothing ->
+            Nothing -> do
               pure state
             Just (Update game command) -> do
               Player.play meshFactory (undo command)
               Referee.judge game
+              Audio.play sounds.undoMove
               pure state { game = game }
         -- Left click -> Play chess by selecting pieces and committing moves.
         MouseEvent cursor Mouse'Left Mouse'Pressed _  -> do
@@ -54,6 +58,7 @@ process meshFactory input initState = do
             Nothing  -> pure state
             Just pos -> do
               updates <- Player.select standardRulebook state.game pos
+              Audio.play sounds.pickPiece
               -- To keep it simple, we always play the first game update. If we
               -- have multiple possible updates (e.g., options for promoting a piece),
               -- we would need some user involvement for selecting one -> TODO.

@@ -31,6 +31,9 @@ import ChessExample.Vulkan.Memory   (manageMemoryAllocator)
 import ChessExample.Vulkan.Renderer (allocateRenderer)
 import ChessExample.Vulkan.Setup    (manageRenderSetup, withRenderSetup)
 import Effectful.Extra              (type (<:))
+import UnifiedAudio.Effectful
+import ChessExample.Sound             
+import Effectful.Reader.Static         (Reader)
 
 -- This is where the actual code for the game begins. The game implementation is
 -- independent of concrete strategies for logging, GPU memory allocation, windowing
@@ -46,6 +49,7 @@ game
      , es <: Memory a k
      , es <: Resource
      , es <: Window w
+     , es <: Audio s
      )
   => [String] -> Eff es ()
 game layers =
@@ -55,11 +59,12 @@ game layers =
     allocator   <- manageMemoryAllocator renderSetup
     renderer    <- allocateRenderer renderSetup allocator 3
     meshFactory <- loadScene renderer allocator 800 600
+    sounds      <- initSounds
     initState   <- newGameState renderer meshFactory
     withRenderSetup renderSetup $
       loopUntil_ (.done) initState $
         \dt state -> do
           input     <- tickPoll dt window
-          state'    <- process meshFactory input state
+          state'    <- process meshFactory input sounds state
           renderer' <- render allocator state'.renderer
           pure $ state' { renderer = renderer' }

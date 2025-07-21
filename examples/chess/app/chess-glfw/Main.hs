@@ -31,6 +31,8 @@ import qualified Data.Vector as V
 -- vulkan
 import Vulkan.Core10.FundamentalTypes (Extent2D(height, width))
 
+import UnifiedAudio.Mock ( runAudio )
+
 swapchainToString :: Vk.Swapchain -> String
 swapchainToString swapchain =
   printf "Swapchain (%d images, %dx%d resolution, %s)"
@@ -55,6 +57,7 @@ main
   . runLog (mapLogger queueToString logger)
   . runLog (mapLogger swapchainToString logger)
   . runLog (mapLoggerIO Vk.getDeviceName logger)
+  . runAudio 
   . runMemory ALLOCATION_CREATE_STRATEGY_MIN_TIME_BIT
   . runWindow
   $ game ["VK_LAYER_KHRONOS_validation"]
