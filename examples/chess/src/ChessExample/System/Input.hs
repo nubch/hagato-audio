@@ -44,7 +44,7 @@ process meshFactory input sounds initState = do
         -- Backspace -> Take back last move.
         KeyEvent Key'Backspace _ Key'Pressed _ ->
           case state.game.lastUpdate of
-            Nothing -> do
+            Nothing ->
               pure state
             Just (Update game command) -> do
               Player.play meshFactory (undo command)
