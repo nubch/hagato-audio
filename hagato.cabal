@@ -299,6 +299,7 @@ library chess
   visibility: private
   exposed-modules:
       ChessExample.Component.Animation
+      ChessExample.Component.Audio
       ChessExample.Component.Camera
       ChessExample.Component.Environment
       ChessExample.Component.Focus
@@ -314,6 +315,7 @@ library chess
       ChessExample.System.Asset
       ChessExample.System.Director
       ChessExample.System.Input
+      ChessExample.System.Mixer
       ChessExample.System.Player
       ChessExample.System.Referee
       ChessExample.System.World
