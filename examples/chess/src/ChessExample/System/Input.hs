@@ -26,14 +26,14 @@ import ChessExample.System.Director  qualified as Director
 import ChessExample.System.Player    qualified as Player
 import ChessExample.System.Referee   qualified as Referee
 import ChessExample.System.World     (World)
-
-import UnifiedAudio.Effectful        qualified as Audio
+import ChessExample.System.Mixer
+import ChessExample.Component.Audio
 
 -- The input system maps the input of the window (keyboard, mouse, etc.) to the
 -- game state, thus creating a new game state. It does this by delegating the work
 -- to other systems depending on the input.
-process :: (ECS World :> es, Audio.Audio s :> es) => MeshFactory -> Input -> Sounds s -> GameState -> Eff es GameState
-process meshFactory input sounds initState = do
+process :: (ECS World :> es) => MeshFactory -> Input -> GameState -> Eff es GameState
+process meshFactory input initState = do
   Director.moveCursor input.cursor
   foldM handle initState input.events
     where
@@ -66,7 +66,7 @@ process meshFactory input sounds initState = do
                 Update game command : _ -> do
                   Player.play meshFactory command
                   Referee.judge game
-                  _ <- Audio.play sounds.playPiece
+                  emitMoveSfx
                   pure state { game = game }
         -- Right click -> Activate rotation mode.
         MouseEvent cursor Mouse'Right Mouse'Pressed _ ->
