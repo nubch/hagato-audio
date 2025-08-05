@@ -31,7 +31,7 @@ type All =
     ( Screen
     , Transform
     ),
-      MoveSfx
+    MoveSfx
   )
 
 makeWorld "World"

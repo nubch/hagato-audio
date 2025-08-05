@@ -58,12 +58,11 @@ game layers =
     allocator   <- manageMemoryAllocator renderSetup
     renderer    <- allocateRenderer renderSetup allocator 3
     meshFactory <- loadScene renderer allocator 800 600
-    sounds      <- initSounds
     initState   <- newGameState renderer meshFactory
     withRenderSetup renderSetup $
       loopUntil_ (.done) initState $
         \dt state -> do
           input     <- tickPoll dt window
-          state'    <- process meshFactory input sounds state
+          state'    <- process meshFactory input state
           renderer' <- render allocator state'.renderer
           pure $ state' { renderer = renderer' }
