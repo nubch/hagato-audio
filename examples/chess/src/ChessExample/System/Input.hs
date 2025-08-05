@@ -18,7 +18,6 @@ import Hagato.Core.Math.Vec2 (y)
 -- effectful-core
 import Effectful (Eff, (:>))
 
-import ChessExample.Sound            
 import ChessExample.Component.Mesh   (MeshFactory)
 import ChessExample.GameState        (GameState(game, done))
 import ChessExample.System.Animator  qualified as Animator
@@ -26,13 +25,12 @@ import ChessExample.System.Director  qualified as Director
 import ChessExample.System.Player    qualified as Player
 import ChessExample.System.Referee   qualified as Referee
 import ChessExample.System.World     (World)
-import ChessExample.System.Mixer
-import ChessExample.Component.Audio
+import ChessExample.System.Mixer     (emitMoveSfx)
 
 -- The input system maps the input of the window (keyboard, mouse, etc.) to the
 -- game state, thus creating a new game state. It does this by delegating the work
 -- to other systems depending on the input.
-process :: (ECS World :> es) => MeshFactory -> Input -> GameState -> Eff es GameState
+process :: ECS World :> es => MeshFactory -> Input -> GameState -> Eff es GameState
 process meshFactory input initState = do
   Director.moveCursor input.cursor
   foldM handle initState input.events

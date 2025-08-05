@@ -6,7 +6,7 @@ import Effectful                --(Eff, (:>))
 import Control.Monad (void)
 
 import ChessExample.System.World     (World)
-import ChessExample.Component.Audio  
+import ChessExample.Component.Audio  (MoveSfx (..))
 import UnifiedAudio.Effectful        qualified as UA
 
 emitMoveSfx
