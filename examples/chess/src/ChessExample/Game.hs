@@ -32,7 +32,6 @@ import ChessExample.Vulkan.Renderer (allocateRenderer)
 import ChessExample.Vulkan.Setup    (manageRenderSetup, withRenderSetup)
 import Effectful.Extra              (type (<:))
 import UnifiedAudio.Effectful
-import ChessExample.Sound             
 
 -- This is where the actual code for the game begins. The game implementation is
 -- independent of concrete strategies for logging, GPU memory allocation, windowing

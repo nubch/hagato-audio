@@ -9,8 +9,7 @@ import ChessExample.System.World     (World)
 import ChessExample.Component.Audio  (MoveSfx (..))
 import UnifiedAudio.Effectful        qualified as UA
 
-emitMoveSfx
-  :: (ECS World :> es) => Eff es ()
+emitMoveSfx:: (ECS World :> es) => Eff es ()
 emitMoveSfx = newEntity_ MoveSfx
 
 
