@@ -18,6 +18,7 @@ import Effectful (Eff, (:>))
 
 import ChessExample.Component.Focus (Focus(Lost, Threatened))
 import ChessExample.Component.Index (lookupPiece)
+import ChessExample.System.Mixer    qualified as Mixer
 import ChessExample.System.World    (World)
 
 -- The referee system judges the state of the chess game and sets the focus to
@@ -34,6 +35,7 @@ judge game =
         setFocus Threatened game.activePlayer index
         setFocus Threatened game.passivePlayer index
     Chess.Win player ->
+      Mixer.emitWinSfx
       cmapM_ $ setFocus Lost (other player)
   where
     other player

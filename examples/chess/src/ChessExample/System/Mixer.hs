@@ -7,14 +7,19 @@ import Effectful                --(Eff, (:>))
 import Control.Monad (void)
 
 import ChessExample.System.World     (World)
-import ChessExample.Component.Audio  (MoveSfx (..))
+import ChessExample.Component.Audio  
 import UnifiedAudio.Effectful        qualified as UA
 
-emitMoveSfx:: (ECS World :> es) => Eff es ()
+emitMoveSfx :: (ECS World :> es) => Eff es ()
 emitMoveSfx = newEntity_ MoveSfx
 
+emitCaptureSfx :: (ECS World :> es) => Eff es ()
+emitCaptureSfx = newEntity_ CaptureSfx
 
-audioSystem :: ( ECS World :> es, UA.Audio s :> es) => Eff es ()
+emitWinSfx :: (ECS World :> es) => Eff es ()
+emitWinSfx = newEntity_ WinSfx
+
+audioSystem :: (ECS World :> es, UA.Audio s :> es) => Eff es ()
 audioSystem = do
   cmapM $ \(MoveSfx) -> do
     clip <- UA.load "assets/sfx/move.wav"

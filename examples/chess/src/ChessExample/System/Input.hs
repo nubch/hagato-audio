@@ -25,7 +25,7 @@ import ChessExample.System.Director  qualified as Director
 import ChessExample.System.Player    qualified as Player
 import ChessExample.System.Referee   qualified as Referee
 import ChessExample.System.World     (World)
-import ChessExample.System.Mixer     (emitMoveSfx)
+import ChessExample.System.Mixer     qualified as Mixer
 
 -- The input system maps the input of the window (keyboard, mouse, etc.) to the
 -- game state, thus creating a new game state. It does this by delegating the work
@@ -54,6 +54,7 @@ process meshFactory input initState = do
           case position of
             Nothing  -> pure state
             Just pos -> do
+              Mixer.emitSelectSfx
               updates <- Player.select standardRulebook state.game pos
               -- To keep it simple, we always play the first game update. If we
               -- have multiple possible updates (e.g., options for promoting a piece),
@@ -64,7 +65,7 @@ process meshFactory input initState = do
                 Update game command : _ -> do
                   Player.play meshFactory command
                   Referee.judge game
-                  emitMoveSfx
+                  Mixer.emitMoveSfx
                   pure state { game = game }
         -- Right click -> Activate rotation mode.
         MouseEvent cursor Mouse'Right Mouse'Pressed _ ->
