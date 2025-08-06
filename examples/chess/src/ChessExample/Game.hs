@@ -27,6 +27,7 @@ import ChessExample.System.Artist   (render)
 import ChessExample.System.Asset    (loadScene)
 import ChessExample.System.Input    (process)
 import ChessExample.System.World    (initWorld)
+import ChessExample.System.Mixer    (audioSystem)
 import ChessExample.Vulkan.Memory   (manageMemoryAllocator)
 import ChessExample.Vulkan.Renderer (allocateRenderer)
 import ChessExample.Vulkan.Setup    (manageRenderSetup, withRenderSetup)
@@ -63,5 +64,6 @@ game layers =
         \dt state -> do
           input     <- tickPoll dt window
           state'    <- process meshFactory input state
+          audioSystem
           renderer' <- render allocator state'.renderer
           pure $ state' { renderer = renderer' }

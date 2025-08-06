@@ -1,3 +1,4 @@
+{-# LANGUAGE TypeApplications #-}
 module ChessExample.System.Mixer where
 
 import Apecs.Effectful                    -- ECS World helpers
@@ -15,7 +16,7 @@ emitMoveSfx = newEntity_ MoveSfx
 
 audioSystem :: ( ECS World :> es, UA.Audio s :> es) => Eff es ()
 audioSystem = do
-  cmapM_ $ \(e, MoveSfx) -> do
+  cmapM $ \(MoveSfx) -> do
     clip <- UA.load "assets/sfx/move.wav"
     _    <- UA.play clip
-    destroy @MoveSfx e
+    return $ Not @(MoveSfx)
