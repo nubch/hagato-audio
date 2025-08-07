@@ -9,19 +9,19 @@ import Control.Monad (void)
 import ChessExample.System.World     (World)
 import ChessExample.Component.Audio  
 import UnifiedAudio.Effectful        qualified as UA
+import ChessExample.Sounds
 
-emitMoveSfx :: (ECS World :> es) => Eff es ()
-emitMoveSfx = newEntity_ MoveSfx
+playSound :: (ECS World :> es) => Sound -> Eff es ()
+playSound sound = newEntity_ $ SoundRequest sound Start 
 
-emitCaptureSfx :: (ECS World :> es) => Eff es ()
-emitCaptureSfx = newEntity_ CaptureSfx
+audioSystem :: (ECS World :> es, UA.Audio s :> es) => Sounds s -> Eff es ()
+audioSystem sounds = do
+  cmapM $ \(SoundRequest sound request) -> do
+    _    <- UA.play (toLoadedSound sound)
+    return $ Not @(SoundRequest)
+  where
+    toLoadedSound Move    = sounds.moveSound
+    toLoadedSound Select  = sounds.selectSound
+    toLoadedSound Capture = sounds.captureSound
+    toLoadedSound Win     = sounds.winSound
 
-emitWinSfx :: (ECS World :> es) => Eff es ()
-emitWinSfx = newEntity_ WinSfx
-
-audioSystem :: (ECS World :> es, UA.Audio s :> es) => Eff es ()
-audioSystem = do
-  cmapM $ \(MoveSfx) -> do
-    clip <- UA.load "assets/sfx/move.wav"
-    _    <- UA.play clip
-    return $ Not @(MoveSfx)

@@ -13,7 +13,7 @@ import ChessExample.Component.Index       (Index)
 import ChessExample.Component.Mesh        (Mesh)
 import ChessExample.Component.Screen      (Screen)
 import ChessExample.Component.Transform   (Transform)
-import ChessExample.Component.Audio       (MoveSfx)
+import ChessExample.Component.Audio       
 
 -- Type synonym that references all components. Used to delete entities, i.e. to
 -- delete all components of an entity.
@@ -30,8 +30,7 @@ type All =
     ),
     ( Screen
     , Transform
-    ),
-    MoveSfx
+    )
   )
 
 makeWorld "World"
@@ -46,5 +45,5 @@ makeWorld "World"
   , ''Screen
   , ''Transform,
     -- Audio components
-    ''MoveSfx
+    ''SoundRequest
   ]

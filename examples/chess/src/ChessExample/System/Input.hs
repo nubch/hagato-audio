@@ -19,6 +19,7 @@ import Hagato.Core.Math.Vec2 (y)
 import Effectful (Eff, (:>))
 
 import ChessExample.Component.Mesh   (MeshFactory)
+import ChessExample.Component.Audio
 import ChessExample.GameState        (GameState(game, done))
 import ChessExample.System.Animator  qualified as Animator
 import ChessExample.System.Director  qualified as Director
@@ -54,7 +55,8 @@ process meshFactory input initState = do
           case position of
             Nothing  -> pure state
             Just pos -> do
-              Mixer.emitSelectSfx
+              Mixer.playSound Select
+              -- #select
               updates <- Player.select standardRulebook state.game pos
               -- To keep it simple, we always play the first game update. If we
               -- have multiple possible updates (e.g., options for promoting a piece),
@@ -65,7 +67,7 @@ process meshFactory input initState = do
                 Update game command : _ -> do
                   Player.play meshFactory command
                   Referee.judge game
-                  Mixer.emitMoveSfx
+                  Mixer.playSound Move
                   pure state { game = game }
         -- Right click -> Activate rotation mode.
         MouseEvent cursor Mouse'Right Mouse'Pressed _ ->

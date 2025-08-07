@@ -31,6 +31,7 @@ import ChessExample.System.Mixer    (audioSystem)
 import ChessExample.Vulkan.Memory   (manageMemoryAllocator)
 import ChessExample.Vulkan.Renderer (allocateRenderer)
 import ChessExample.Vulkan.Setup    (manageRenderSetup, withRenderSetup)
+import ChessExample.Sounds
 import Effectful.Extra              (type (<:))
 import UnifiedAudio.Effectful
 
@@ -58,12 +59,13 @@ game layers =
     allocator   <- manageMemoryAllocator renderSetup
     renderer    <- allocateRenderer renderSetup allocator 3
     meshFactory <- loadScene renderer allocator 800 600
+    sounds      <- initSounds
     initState   <- newGameState renderer meshFactory
     withRenderSetup renderSetup $
       loopUntil_ (.done) initState $
         \dt state -> do
           input     <- tickPoll dt window
           state'    <- process meshFactory input state
-          audioSystem
+          audioSystem sounds
           renderer' <- render allocator state'.renderer
           pure $ state' { renderer = renderer' }

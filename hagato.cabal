@@ -309,6 +309,7 @@ library chess
       ChessExample.Component.Transform
       ChessExample.Game
       ChessExample.GameState
+      ChessExample.Sounds
       ChessExample.System.Animator
       ChessExample.System.Artist
       ChessExample.System.Asset

@@ -1,24 +1,30 @@
 {-# LANGUAGE TypeFamilies #-}
+{-# LANGUAGE DataKinds #-}
+
 module ChessExample.Component.Audio where
 
 import Apecs.Effectful (Component(..), Global, Map)
+import UnifiedAudio.Effectful qualified as UA
 
-data MoveSfx = MoveSfx
+data Sound = Move | Select | Capture | Win
+  deriving (Eq, Show)
 
-data SelectSfx = SelectSfx
+data Request = Start | Stop | Pause | Resume
+  deriving (Eq, Show)
 
-data CaptureSfx = CaptureSfx
+data SoundRequest = SoundRequest {
+    sound   :: Sound,
+    request :: Request
+}
 
-data WinSfx = WinSfx
+instance Component SoundRequest
+    where type Storage SoundRequest = Map SoundRequest
 
-instance Component MoveSfx
-    where type Storage MoveSfx = Map MoveSfx
+--instance Component CaptureSfx
+    --where type Storage CaptureSfx = Map CaptureSfx
 
-instance Component CaptureSfx
-    where type Storage CaptureSfx = Map CaptureSfx
+--instance Component SelectSfx
+    --where type Storage SelectSfx = Map SelectSfx
 
-instance Component SelectSfx
-    where type Storage SelectSfx = Map SelectSfx
-
-instance Component WinSfx
-    where type Storage WinSfx = Map WinSfx
+--instance Component WinSfx
+    --where type Storage WinSfx = Map WinSfx

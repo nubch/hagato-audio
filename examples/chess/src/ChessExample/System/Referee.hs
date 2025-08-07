@@ -35,7 +35,7 @@ judge game =
         setFocus Threatened game.activePlayer index
         setFocus Threatened game.passivePlayer index
     Chess.Win player ->
-      Mixer.emitWinSfx
+      -- #win
       cmapM_ $ setFocus Lost (other player)
   where
     other player
