@@ -48,9 +48,9 @@ play meshFactory command = do
         EndTurn ->
           pure ()
         Move dst (Some piece) -> do
-          let sound = case piece.type' of
-                Knight -> Audio.KnightMove
-                _      -> Audio.Move
+          let sound = if piece.type' `equals` Knight
+                then Audio.KnightMove
+                else Audio.Move
           Mixer.playSound sound Once
           index <- get global
           forM_ (lookupPiece piece.position index) $ \e -> do

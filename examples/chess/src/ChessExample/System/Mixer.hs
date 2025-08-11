@@ -5,27 +5,33 @@ import Apecs.Effectful                    -- ECS (World s) helpers
 import Effectful                --(Eff, (:>))
 
 import Control.Monad (void)
-
+import Data.Typeable (Typeable)
 import ChessExample.System.World     (World)
 import ChessExample.Component.Audio  
 import UnifiedAudio.Effectful        qualified as UA
 import ChessExample.Sounds
 
-playSound :: (ECS (World s) :> es) => Sound -> UA.Times -> Eff es ()
+playSound :: ECS (World s) :> es => Sound -> UA.Times -> Eff es ()
 playSound sound times = newEntity_ $ SoundRequest sound Start times
 
---muteAllChannels :: (ECS (World s) :> es) => Eff es ()
---muteAllChannels = newEntity_ MuteAllRequest
+muteAllChannels :: ECS (World s) :> es => Eff es ()
+muteAllChannels = set global MuteAllRequest
 
-audioSystem :: (ECS (World s) :> es, UA.Audio s :> es) => Sounds s -> Eff es ()
+audioSystem :: (Typeable s, ECS (World s) :> es, UA.Audio s :> es) => Sounds s -> Eff es ()
 audioSystem sounds = do
   cmapM $ \(SoundRequest sound request times) -> do
     channel    <- UA.play (toLoadedSound sound) times
-    return $ Not @(SoundRequest)
+    newEntity_ $ PlayingChannel channel
+    return $ Not @SoundRequest
+  cmapM_ $ \(_ :: MuteAllRequest) -> do
+    cmapM_ $ \(PlayingChannel channel) -> do
+      void $ UA.mute channel
+    set global (Not @MuteAllRequest)
   where
-    toLoadedSound Move    = sounds.moveSound
-    toLoadedSound KnightMove = sounds.knightMove
-    toLoadedSound Select  = sounds.selectSound
-    toLoadedSound Capture = sounds.captureSound
-    toLoadedSound Win     = sounds.winSound
+    toLoadedSound s = case s of
+      Move        -> sounds.moveSound
+      KnightMove  -> sounds.knightMove
+      Select      -> sounds.selectSound
+      Capture     -> sounds.captureSound
+      Win         -> sounds.winSound
 

@@ -26,6 +26,7 @@ import ChessExample.System.Animator  qualified as Animator
 import ChessExample.System.Director  qualified as Director
 import ChessExample.System.Player    qualified as Player
 import ChessExample.System.Referee   qualified as Referee
+import ChessExample.System.Mixer     qualified as Mixer
 import ChessExample.System.World     (World)
 
 -- The input system maps the input of the window (keyboard, mouse, etc.) to the
@@ -40,6 +41,8 @@ process meshFactory input initState = do
         -- Escape -> Exit game loop.
         KeyEvent Key'Escape _ _ _ ->
           pure state { done = True }
+        KeyEvent Key'M _ _ _ ->
+          Mixer.muteAllChannels @s >> pure state
         -- Backspace -> Take back last move.
         KeyEvent Key'Backspace _ Key'Pressed _ ->
           case state.game.lastUpdate of

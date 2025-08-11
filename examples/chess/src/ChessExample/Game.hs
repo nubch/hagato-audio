@@ -35,8 +35,7 @@ import ChessExample.Vulkan.Setup    (manageRenderSetup, withRenderSetup)
 import ChessExample.Sounds
 import Effectful.Extra              (type (<:))
 import UnifiedAudio.Effectful
-
-import ChessExample.System.World
+import Data.Typeable (Typeable)
 
 -- This is where the actual code for the game begins. The game implementation is
 -- independent of concrete strategies for logging, GPU memory allocation, windowing
@@ -45,7 +44,8 @@ import ChessExample.System.World
 -- maybe even via separate build configurations where only the main function needs to
 -- be rebuilt.
 game
-  :: forall es s a k w. ( es <: IOE
+  :: forall es s a k w. ( Typeable s,
+       es <: IOE
      , es <: Log PhysicalDevice
      , es <: Log Swapchain
      , es <: Log Queue

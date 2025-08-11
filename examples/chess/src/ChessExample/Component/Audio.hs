@@ -4,7 +4,7 @@
 module ChessExample.Component.Audio where
 
 import Data.Kind (Type)
-import Apecs.Effectful (Component(..), Global, Map)
+import Apecs.Effectful (Component(..), Global, Map, Unique)
 import UnifiedAudio.Effectful qualified as UA
 
 data Sound = Move | KnightMove | Select | Capture | Win
@@ -29,7 +29,7 @@ instance Component SoundRequest
     where type Storage SoundRequest = Map SoundRequest
 
 instance Component MuteAllRequest
-    where type Storage MuteAllRequest = Map MuteAllRequest
+    where type Storage MuteAllRequest = Unique MuteAllRequest
 
 instance Component (PlayingChannel s)
     where type Storage (PlayingChannel s) = Map (PlayingChannel s)

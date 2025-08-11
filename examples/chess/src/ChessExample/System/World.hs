@@ -14,6 +14,7 @@ import ChessExample.Component.Mesh        (Mesh)
 import ChessExample.Component.Screen      (Screen)
 import ChessExample.Component.Transform   (Transform)
 import ChessExample.Component.Audio       
+import UnifiedAudio.Effectful (mute)
 
 -- Type synonym that references all components. Used to delete entities, i.e. to
 -- delete all components of an entity.
@@ -33,6 +34,7 @@ type All s =
     )
     , SoundRequest
     , PlayingChannel s
+    , MuteAllRequest
   )
 
 data World s = World
@@ -50,6 +52,7 @@ data World s = World
   -- Audio components
   , soundRequest   :: Storage SoundRequest
   , playingChannel :: Storage (PlayingChannel s)
+  , muteAllRequest :: Storage MuteAllRequest
   }
 
 instance Monad m => Has (World s) m Camera where
@@ -91,6 +94,9 @@ instance Monad m => Has (World s) m (PlayingChannel s) where
 instance Monad m => Has (World s) m EntityCounter where
    getStore = SystemT (asks entityCounter)
 
+instance Monad m => Has (World s) m MuteAllRequest where
+   getStore = SystemT (asks muteAllRequest)
+
 initWorld :: IO (World s)
 initWorld = 
   World 
@@ -105,6 +111,7 @@ initWorld =
   <*> explInit
   <*> explInit
   <*> explInit
+  <*> explInit  
   <*> explInit  
   <*> explInit  
 
