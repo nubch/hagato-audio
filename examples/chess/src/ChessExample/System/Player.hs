@@ -30,6 +30,10 @@ import ChessExample.Component.Index
 import ChessExample.Component.Mesh      (MeshFactory)
 import ChessExample.Component.Transform (Transform(Transform, translation))
 import ChessExample.System.World        (World)
+import ChessExample.System.Mixer        qualified as Mixer
+import ChessExample.Component.Audio     qualified as Audio
+import UnifiedAudio.Effectful (Times(..))
+
 
 -- The player system represents the actions of a chess player. It executes chess
 -- game commands and moves (i.e. animates) the chess pieces accordingly.
@@ -44,6 +48,10 @@ play meshFactory command = do
         EndTurn ->
           pure ()
         Move dst (Some piece) -> do
+          let sound = case piece.type' of
+                Knight -> Audio.KnightMove
+                _      -> Audio.Move
+          Mixer.playSound sound Once
           index <- get global
           forM_ (lookupPiece piece.position index) $ \e -> do
             cmap $ removePiece piece.position

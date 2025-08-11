@@ -27,6 +27,7 @@ import ChessExample.System.Player    qualified as Player
 import ChessExample.System.Referee   qualified as Referee
 import ChessExample.System.World     (World)
 import ChessExample.System.Mixer     qualified as Mixer
+import UnifiedAudio.Effectful (Times (..))
 
 -- The input system maps the input of the window (keyboard, mouse, etc.) to the
 -- game state, thus creating a new game state. It does this by delegating the work
@@ -55,7 +56,6 @@ process meshFactory input initState = do
           case position of
             Nothing  -> pure state
             Just pos -> do
-              Mixer.playSound Select
               -- #select
               updates <- Player.select standardRulebook state.game pos
               -- To keep it simple, we always play the first game update. If we
@@ -67,7 +67,6 @@ process meshFactory input initState = do
                 Update game command : _ -> do
                   Player.play meshFactory command
                   Referee.judge game
-                  Mixer.playSound Move
                   pure state { game = game }
         -- Right click -> Activate rotation mode.
         MouseEvent cursor Mouse'Right Mouse'Pressed _ ->

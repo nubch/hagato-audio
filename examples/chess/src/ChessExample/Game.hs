@@ -60,6 +60,7 @@ game layers =
     renderer    <- allocateRenderer renderSetup allocator 3
     meshFactory <- loadScene renderer allocator 800 600
     sounds      <- initSounds
+    music       <- play sounds.music Forever
     initState   <- newGameState renderer meshFactory
     withRenderSetup renderSetup $
       loopUntil_ (.done) initState $
