@@ -26,7 +26,7 @@ import UnifiedAudio.Effectful (Times(Forever))
 -- The referee system judges the state of the chess game and sets the focus to
 -- the world entities accordingly (e.g., declares a player the winner by marking
 -- the opponent's king with the status "Lost").
-judge :: ECS World :> es => Game -> Eff es ()
+judge :: ECS (World s) :> es => Game -> Eff es ()
 judge game =
   case standardRulebook.status game of
     Chess.Turn player ->

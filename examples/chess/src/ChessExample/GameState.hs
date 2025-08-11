@@ -28,7 +28,7 @@ data GameState = GameState
 
 -- A smart constructor for an initial game state which populates the world with
 -- the initial chess pieces.
-newGameState :: ECS World :> es => Renderer -> MeshFactory -> Eff es GameState
+newGameState :: ECS (World s) :> es => Renderer -> MeshFactory -> Eff es GameState
 newGameState renderer meshFactory = do
   let game = standardRulebook.newGame
   forM_ (spawnCommands game) (play meshFactory)

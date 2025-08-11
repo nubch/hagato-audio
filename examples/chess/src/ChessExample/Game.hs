@@ -1,4 +1,5 @@
 {-# LANGUAGE ExplicitNamespaces  #-}
+{-# LANGUAGE ScopedTypeVariables  #-}
 module ChessExample.Game where
 
 -- apecs-effectful
@@ -35,6 +36,8 @@ import ChessExample.Sounds
 import Effectful.Extra              (type (<:))
 import UnifiedAudio.Effectful
 
+import ChessExample.System.World
+
 -- This is where the actual code for the game begins. The game implementation is
 -- independent of concrete strategies for logging, GPU memory allocation, windowing
 -- and debugging. These strategies will be set near the main function, which allows
@@ -42,7 +45,7 @@ import UnifiedAudio.Effectful
 -- maybe even via separate build configurations where only the main function needs to
 -- be rebuilt.
 game
-  :: ( es <: IOE
+  :: forall es s a k w. ( es <: IOE
      , es <: Log PhysicalDevice
      , es <: Log Swapchain
      , es <: Log Queue
@@ -53,7 +56,7 @@ game
      )
   => [String] -> Eff es ()
 game layers =
-  evalState 0 . runECS initWorld $ do
+  evalState 0 . runECS (initWorld @s) $ do
     window      <- manageWindow 800 600 "Left Click: Play | Right Click: Rotate | Scroll: Zoom | Backspace: Take Back"
     renderSetup <- manageRenderSetup window layers
     allocator   <- manageMemoryAllocator renderSetup

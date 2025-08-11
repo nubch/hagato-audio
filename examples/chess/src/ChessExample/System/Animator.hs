@@ -1,3 +1,5 @@
+{-# LANGUAGE ScopedTypeVariables #-}
+
 module ChessExample.System.Animator where
 
 -- apecs-effectful
@@ -23,7 +25,7 @@ import ChessExample.System.World        (All, World)
 -- animations from entities when they are finished.
 
 -- Animates all entities in the world, based on the elapsed time since the last loop iteration.
-animate :: ECS World :> es => Float -> Eff es ()
+animate :: forall s es. ECS (World s) :> es => Float -> Eff es ()
 animate dt = do
   cmap updatePath
   cmap updateForward
@@ -54,6 +56,6 @@ animate dt = do
       -- animate (or better: remove) entities that fade out after some time.
       updateFadeOut (FadeOut animation)
         | animation.done =
-            Left (Not @All)
+            Left (Not @(All s))
         | otherwise =
             Right (FadeOut $ step dt animation)

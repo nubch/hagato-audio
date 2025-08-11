@@ -55,7 +55,7 @@ import Effectful.Extra                    (type (<:))
 -- Renders the entities of the world.
 render
   :: ( es <: IOE
-     , es <: ECS World
+     , es <: ECS (World s)
      , es <: Log Swapchain
      , es <: Memory a k
      , es <: Resource
@@ -122,7 +122,7 @@ render allocator renderer@Renderer{..} = do
 renderScene
   :: ( es <: IOE
      , es <: Reader Vk.CommandBuffer
-     , es <: ECS World
+     , es <: ECS (World s)
      )
   => Renderer -> Frame -> Eff es ()
 renderScene Renderer{..} frame =

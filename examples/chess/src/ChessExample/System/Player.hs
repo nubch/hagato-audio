@@ -39,7 +39,7 @@ import UnifiedAudio.Effectful (Times(..))
 -- game commands and moves (i.e. animates) the chess pieces accordingly.
 
 -- Plays a specific chess command by moving (=animating) the pieces.
-play :: ECS World :> es => MeshFactory -> Command -> Eff es ()
+play :: ECS (World s) :> es => MeshFactory -> Command -> Eff es ()
 play meshFactory command = do
   unfocus
   go command
@@ -104,7 +104,7 @@ play meshFactory command = do
 -- Represents an action where the chess player interacts with a position on the chess
 -- board (e.g., to select a chess piece or confirm a move of the selected chess piece).
 -- The list of selected game state updates is returned, which may be empty.
-select :: ECS World :> es => Rulebook -> Game -> Position -> Eff es [Update]
+select :: ECS (World s) :> es => Rulebook -> Game -> Position -> Eff es [Update]
 select rulebook game position = do
   index <- get global
   case lookupTargets position index of
@@ -124,12 +124,12 @@ select rulebook game position = do
           reselect $ setFocus Nothing []
           pure []
 
-unfocus :: ECS World :> es => Eff es ()
+unfocus :: ECS (World s) :> es => Eff es ()
 unfocus = do
   cmap $ setFocus Nothing []         -- reset index
   cmap $ \(_ :: Focus) -> Not @Focus -- reset fields/pieces
 
-reselect :: ECS World :> es => (Index -> Index) -> Eff es ()
+reselect :: ECS (World s) :> es => (Index -> Index) -> Eff es ()
 reselect f = do
   -- de-select (=unfocus) all currently selected fields
   cmap $ \case

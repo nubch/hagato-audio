@@ -34,7 +34,7 @@ import ChessExample.System.World        (World)
 -- is related to interacting with objects through the current field of view.
 
 -- Determines which chess board position is associated with the specified cursor position.
-target :: ECS World :> es => Vec2 -> Eff es (Maybe Position)
+target :: ECS (World s) :> es => Vec2 -> Eff es (Maybe Position)
 target cursor = do
   Camera cam _        <- get global
   Screen _ viewport _ <- get global
@@ -56,7 +56,7 @@ target cursor = do
     mkPosition row column
 
 -- Zooms the camera in (+) or out (-) for a specific distance.
-zoom :: ECS World :> es => Float -> Eff es ()
+zoom :: ECS (World s) :> es => Float -> Eff es ()
 zoom distance =
   cmap $ \(Camera cam nowZoom) ->
     let
@@ -69,7 +69,7 @@ zoom distance =
       (Camera cam newZoom, Forward forward)
 
 -- Marks the screen component dirty because of a resize.
-resize :: ECS World :> es => Vec2 -> Eff es ()
+resize :: ECS (World s) :> es => Vec2 -> Eff es ()
 resize viewport =
   cmap $ \(Camera cam nowZoom, Screen cursor _ _) ->
     ( Camera (setAspectRatio viewport cam) nowZoom
@@ -77,13 +77,13 @@ resize viewport =
     )
 
 -- Activates (Just cursor) or deactivates (Nothing) the rotation of the scene.
-rotate :: ECS World :> es => Maybe Vec2 -> Eff es ()
+rotate :: ECS (World s) :> es => Maybe Vec2 -> Eff es ()
 rotate cursor =
   cmap $ \(Screen _ viewport dirty) ->
     Screen cursor viewport dirty
 
 -- If rotation is activated, moving the cursor means rotating the scene.
-moveCursor :: ECS World :> es => Vec2 -> Eff es ()
+moveCursor :: ECS (World s) :> es => Vec2 -> Eff es ()
 moveCursor newCursor =
   cmap $ \(Camera cam nowZoom, Screen cursor viewport dirty) ->
     case cursor of

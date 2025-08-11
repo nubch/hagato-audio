@@ -1,7 +1,7 @@
 {-# LANGUAGE TypeApplications #-}
 module ChessExample.System.Mixer where
 
-import Apecs.Effectful                    -- ECS World helpers
+import Apecs.Effectful                    -- ECS (World s) helpers
 import Effectful                --(Eff, (:>))
 
 import Control.Monad (void)
@@ -11,13 +11,13 @@ import ChessExample.Component.Audio
 import UnifiedAudio.Effectful        qualified as UA
 import ChessExample.Sounds
 
-playSound :: (ECS World :> es) => Sound -> UA.Times -> Eff es ()
+playSound :: (ECS (World s) :> es) => Sound -> UA.Times -> Eff es ()
 playSound sound times = newEntity_ $ SoundRequest sound Start times
 
---muteAllChannels :: (ECS World :> es) => Eff es ()
+--muteAllChannels :: (ECS (World s) :> es) => Eff es ()
 --muteAllChannels = newEntity_ MuteAllRequest
 
-audioSystem :: (ECS World :> es, UA.Audio s :> es) => Sounds s -> Eff es ()
+audioSystem :: (ECS (World s) :> es, UA.Audio s :> es) => Sounds s -> Eff es ()
 audioSystem sounds = do
   cmapM $ \(SoundRequest sound request times) -> do
     channel    <- UA.play (toLoadedSound sound) times

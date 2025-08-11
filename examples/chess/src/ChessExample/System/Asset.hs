@@ -123,7 +123,7 @@ objects =
 
 -- Loads the chess game scene which was exported from Blender using GLB files.
 loadScene
-  :: ( es <: ECS World
+  :: ( es <: ECS (World s)
      , es <: IOE
      , es <: Vk.Memory a k
      , es <: Resource
