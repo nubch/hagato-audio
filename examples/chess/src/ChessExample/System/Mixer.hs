@@ -17,14 +17,16 @@ playSound sound times = newEntity_ $ SoundRequest sound Start times
 muteAllChannels :: ECS (World s) :> es => Eff es ()
 muteAllChannels = set global MuteAllRequest
 
-audioSystem :: (Typeable s, ECS (World s) :> es, UA.Audio s :> es) => Sounds s -> Eff es ()
+audioSystem :: forall s es. (Typeable s, ECS (World s) :> es, UA.Audio s :> es, IOE :> es) => Sounds s -> Eff es ()
 audioSystem sounds = do
   cmapM $ \(SoundRequest sound request times) -> do
-    channel    <- UA.play (toLoadedSound sound) times
-    newEntity_ $ PlayingChannel channel
+    channel    <- UA.play (toLoadedSound sound) UA.Forever
+    e <- newEntity $ PlayingChannel channel
+    UA.onFinished channel (\channel -> set e (Not @(PlayingChannel s))) 
     return $ Not @SoundRequest
   cmapM_ $ \(_ :: MuteAllRequest) -> do
     cmapM_ $ \(PlayingChannel channel) -> do
+      liftIO $ putStrLn $ "Muting channel"
       void $ UA.mute channel
     set global (Not @MuteAllRequest)
   where
