@@ -16,8 +16,14 @@ data Request = Start | Stop | Pause | Resume
 data MuteAllRequest = MuteAllRequest
   deriving (Eq)
 
+newtype MasterGain = MasterGain UA.Volume
+
+newtype SetMasterGain = SetMasterGain UA.Volume
+
 newtype PlayingChannel (s :: UA.Status -> Type) =
    PlayingChannel (s 'UA.Playing) 
+
+newtype BaseVolume = BaseVolume UA.Volume
 
 data SoundRequest = SoundRequest {
     sound   :: Sound,
@@ -28,8 +34,17 @@ data SoundRequest = SoundRequest {
 instance Component SoundRequest
     where type Storage SoundRequest = Map SoundRequest
 
+instance Component MasterGain 
+    where type Storage MasterGain = Unique MasterGain
+
 instance Component MuteAllRequest
     where type Storage MuteAllRequest = Unique MuteAllRequest
 
 instance Component (PlayingChannel s)
     where type Storage (PlayingChannel s) = Map (PlayingChannel s)
+
+instance Component SetMasterGain
+    where type Storage SetMasterGain = Unique SetMasterGain
+
+instance Component BaseVolume
+    where type Storage BaseVolume = Map BaseVolume

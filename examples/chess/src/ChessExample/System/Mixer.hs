@@ -4,7 +4,7 @@ module ChessExample.System.Mixer where
 import Apecs.Effectful                    -- ECS (World s) helpers
 import Effectful                --(Eff, (:>))
 
-import Control.Monad (void)
+import Control.Monad (void, unless)
 import Data.Typeable (Typeable)
 import ChessExample.System.World     (World)
 import ChessExample.Component.Audio  
@@ -14,21 +14,56 @@ import ChessExample.Sounds
 playSound :: ECS (World s) :> es => Sound -> UA.Times -> Eff es ()
 playSound sound times = newEntity_ $ SoundRequest sound Start times
 
-muteAllChannels :: ECS (World s) :> es => Eff es ()
-muteAllChannels = set global MuteAllRequest
+
+
+setMasterVolume :: ECS (World s) :> es => UA.Volume -> Eff es ()
+setMasterVolume v = set global (SetMasterGain v)
+
+muteAll :: ECS (World s) :> es => Eff es ()
+muteAll = setMasterVolume (UA.mkVolume 0)
+
+unmuteAll :: ECS (World s) :> es => Eff es ()
+unmuteAll = setMasterVolume (UA.mkVolume 1)
+
+toggleMute :: ECS (World s) :> es => Eff es ()
+toggleMute = do
+  MasterGain mg <- get global
+  let v = UA.unVolume mg
+  if v == 0
+    then unmuteAll
+    else muteAll
 
 audioSystem :: forall s es. (Typeable s, ECS (World s) :> es, UA.Audio s :> es, IOE :> es) => Sounds s -> Eff es ()
 audioSystem sounds = do
-  cmapM $ \(SoundRequest sound request times) -> do
-    channel    <- UA.play (toLoadedSound sound) UA.Forever
-    e <- newEntity $ PlayingChannel channel
-    UA.onFinished channel (\channel -> set e (Not @(PlayingChannel s))) 
+  -- Make sure master gain is initialized
+  hasMG <- exists @MasterGain global
+  unless hasMG $ do 
+    set global (MasterGain (UA.mkVolume 1))
+    liftIO $ putStrLn "Initialized Master Gain"
+
+  -- Handle requests for playing sounds
+  cmapM $ \(SoundRequest sound _ times) -> do
+    MasterGain gain <- get global
+
+    liftIO $ putStrLn $ "MASTER" ++ show gain
+    let baseVolume  = UA.mkVolume 1
+        finalVolume = mulVol gain baseVolume
+
+    channel         <- UA.play (toLoadedSound sound) times
+    UA.setVolume channel finalVolume
+    e               <- newEntity (PlayingChannel channel, BaseVolume baseVolume)
+    UA.onFinished channel (\_ -> set e (Not @(PlayingChannel s))) 
     return $ Not @SoundRequest
-  cmapM_ $ \(_ :: MuteAllRequest) -> do
-    cmapM_ $ \(PlayingChannel channel) -> do
-      liftIO $ putStrLn $ "Muting channel"
-      void $ UA.mute channel
-    set global (Not @MuteAllRequest)
+  
+  -- React to Master Gain changes
+  cmapM $ \(SetMasterGain newGain) -> do
+    set global (Not @SetMasterGain)
+    liftIO $ putStrLn $ "Setting master gain to " ++ show newGain
+    set global (MasterGain newGain)
+    MasterGain gain <- get global
+    cmapM_ $ \(PlayingChannel channel, BaseVolume base) -> do
+      UA.setVolume channel (mulVol base gain)
+
   where
     toLoadedSound s = case s of
       Move        -> sounds.moveSound
@@ -36,4 +71,8 @@ audioSystem sounds = do
       Select      -> sounds.selectSound
       Capture     -> sounds.captureSound
       Win         -> sounds.winSound
+
+
+mulVol :: UA.Volume -> UA.Volume -> UA.Volume
+mulVol (UA.Volume a) (UA.Volume b) = UA.mkVolume (a * b)
 

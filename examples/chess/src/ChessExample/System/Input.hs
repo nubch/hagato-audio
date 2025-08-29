@@ -41,8 +41,8 @@ process meshFactory input initState = do
         -- Escape -> Exit game loop.
         KeyEvent Key'Escape _ _ _ ->
           pure state { done = True }
-        KeyEvent Key'M _ _ _ ->
-          Mixer.muteAllChannels @s >> pure state
+        KeyEvent Key'M _ Key'Pressed _ ->
+          Mixer.toggleMute @s >> pure state
         -- Backspace -> Take back last move.
         KeyEvent Key'Backspace _ Key'Pressed _ ->
           case state.game.lastUpdate of

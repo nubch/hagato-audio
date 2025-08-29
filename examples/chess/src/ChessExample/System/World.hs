@@ -53,6 +53,9 @@ data World s = World
   , soundRequest   :: Storage SoundRequest
   , playingChannel :: Storage (PlayingChannel s)
   , muteAllRequest :: Storage MuteAllRequest
+  , masterGain     :: Storage MasterGain
+  , setMasterGain  :: Storage SetMasterGain
+  , baseVolume     :: Storage BaseVolume
   }
 
 instance Monad m => Has (World s) m Camera where
@@ -97,6 +100,15 @@ instance Monad m => Has (World s) m EntityCounter where
 instance Monad m => Has (World s) m MuteAllRequest where
    getStore = SystemT (asks muteAllRequest)
 
+instance Monad m => Has (World s) m MasterGain where
+   getStore = SystemT (asks masterGain)
+
+instance Monad m => Has (World s) m SetMasterGain where
+   getStore = SystemT (asks setMasterGain)
+  
+instance Monad m => Has (World s) m BaseVolume where
+   getStore = SystemT (asks baseVolume)
+
 initWorld :: IO (World s)
 initWorld = 
   World 
@@ -114,6 +126,9 @@ initWorld =
   <*> explInit  
   <*> explInit  
   <*> explInit  
+  <*> explInit  
+  <*> explInit
+  <*> explInit
 
 --makeWorld "World"
   --[ ''Camera
