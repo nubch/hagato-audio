@@ -1,5 +1,5 @@
 {-# LANGUAGE LambdaCase #-}
-{-# ScopedTypeVariables #-}
+{-# LANGUAGE ScopedTypeVariables #-}
 
 module ChessExample.System.Input where
 
@@ -41,8 +41,15 @@ process meshFactory input initState = do
         -- Escape -> Exit game loop.
         KeyEvent Key'Escape _ _ _ ->
           pure state { done = True }
+        -- M     -> Toggle mute.
         KeyEvent Key'M _ Key'Pressed _ ->
           Mixer.toggleMute @s >> pure state
+        -- .     -> Raise master volume.
+        KeyEvent Key'Period _ Key'Pressed _ ->
+          Mixer.raiseVolumeMaster @s >> pure state
+        -- ,     -> Lower master volume.
+        KeyEvent Key'Comma _ Key'Pressed _ ->
+          Mixer.lowerVolumeMaster @s >> pure state
         -- Backspace -> Take back last move.
         KeyEvent Key'Backspace _ Key'Pressed _ ->
           case state.game.lastUpdate of

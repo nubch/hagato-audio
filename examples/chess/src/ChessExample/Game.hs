@@ -24,11 +24,12 @@ import Hagato.Vulkan.Effectful (Memory, Window, manageWindow, tickPoll)
 import Effectful.Resource (Resource)
 
 import ChessExample.GameState       (GameState(..), newGameState)
+import ChessExample.Component.Audio 
 import ChessExample.System.Artist   (render)
 import ChessExample.System.Asset    (loadScene)
 import ChessExample.System.Input    (process)
 import ChessExample.System.World    (initWorld)
-import ChessExample.System.Mixer    (audioSystem)
+import ChessExample.System.Mixer    
 import ChessExample.Vulkan.Memory   (manageMemoryAllocator)
 import ChessExample.Vulkan.Renderer (allocateRenderer)
 import ChessExample.Vulkan.Setup    (manageRenderSetup, withRenderSetup)
@@ -63,8 +64,8 @@ game layers =
     renderer    <- allocateRenderer renderSetup allocator 3
     meshFactory <- loadScene renderer allocator 800 600
     sounds      <- initSounds
-    music       <- play sounds.music Forever
     initState   <- newGameState renderer meshFactory
+    playSound Music Forever
     withRenderSetup renderSetup $
       loopUntil_ (.done) initState $
         \dt state -> do

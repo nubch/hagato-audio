@@ -34,7 +34,6 @@ type All s =
     )
     , SoundRequest
     , PlayingChannel s
-    , MuteAllRequest
   )
 
 data World s = World
@@ -52,7 +51,6 @@ data World s = World
   -- Audio components
   , soundRequest   :: Storage SoundRequest
   , playingChannel :: Storage (PlayingChannel s)
-  , muteAllRequest :: Storage MuteAllRequest
   , masterGain     :: Storage MasterGain
   , setMasterGain  :: Storage SetMasterGain
   , baseVolume     :: Storage BaseVolume
@@ -97,9 +95,6 @@ instance Monad m => Has (World s) m (PlayingChannel s) where
 instance Monad m => Has (World s) m EntityCounter where
    getStore = SystemT (asks entityCounter)
 
-instance Monad m => Has (World s) m MuteAllRequest where
-   getStore = SystemT (asks muteAllRequest)
-
 instance Monad m => Has (World s) m MasterGain where
    getStore = SystemT (asks masterGain)
 
@@ -127,7 +122,6 @@ initWorld =
   <*> explInit  
   <*> explInit  
   <*> explInit  
-  <*> explInit
   <*> explInit
 
 --makeWorld "World"

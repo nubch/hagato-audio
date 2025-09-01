@@ -14,8 +14,6 @@ import ChessExample.Sounds
 playSound :: ECS (World s) :> es => Sound -> UA.Times -> Eff es ()
 playSound sound times = newEntity_ $ SoundRequest sound Start times
 
-
-
 setMasterVolume :: ECS (World s) :> es => UA.Volume -> Eff es ()
 setMasterVolume v = set global (SetMasterGain v)
 
@@ -24,6 +22,20 @@ muteAll = setMasterVolume (UA.mkVolume 0)
 
 unmuteAll :: ECS (World s) :> es => Eff es ()
 unmuteAll = setMasterVolume (UA.mkVolume 1)
+
+lowerVolumeMaster :: ECS (World s) :> es => Eff es ()
+lowerVolumeMaster = do
+  MasterGain mg <- get global
+  let v = UA.unVolume mg
+      v' = max 0 (v - 0.1)
+  setMasterVolume (UA.mkVolume v')
+
+raiseVolumeMaster :: ECS (World s) :> es => Eff es ()
+raiseVolumeMaster = do
+  MasterGain mg <- get global
+  let v = UA.unVolume mg
+      v' = min 1 (v + 0.1)
+  setMasterVolume (UA.mkVolume v')
 
 toggleMute :: ECS (World s) :> es => Eff es ()
 toggleMute = do
@@ -70,6 +82,7 @@ audioSystem sounds = do
       KnightMove  -> sounds.knightMove
       Select      -> sounds.selectSound
       Capture     -> sounds.captureSound
+      Music       -> sounds.music
       Win         -> sounds.winSound
 
 

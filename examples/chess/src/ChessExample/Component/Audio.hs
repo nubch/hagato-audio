@@ -4,17 +4,14 @@
 module ChessExample.Component.Audio where
 
 import Data.Kind (Type)
-import Apecs.Effectful (Component(..), Global, Map, Unique)
+import Apecs.Effectful (Component(..), Map, Unique)
 import UnifiedAudio.Effectful qualified as UA
 
-data Sound = Move | KnightMove | Select | Capture | Win
+data Sound = Move | KnightMove | Select | Capture | Win | Music
   deriving (Eq, Show)
 
 data Request = Start | Stop | Pause | Resume
   deriving (Eq, Show)
-
-data MuteAllRequest = MuteAllRequest
-  deriving (Eq)
 
 newtype MasterGain = MasterGain UA.Volume
 
@@ -36,9 +33,6 @@ instance Component SoundRequest
 
 instance Component MasterGain 
     where type Storage MasterGain = Unique MasterGain
-
-instance Component MuteAllRequest
-    where type Storage MuteAllRequest = Unique MuteAllRequest
 
 instance Component (PlayingChannel s)
     where type Storage (PlayingChannel s) = Map (PlayingChannel s)
