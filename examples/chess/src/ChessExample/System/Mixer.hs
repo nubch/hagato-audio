@@ -10,6 +10,7 @@ import ChessExample.System.World     (World)
 import ChessExample.Component.Audio  
 import UnifiedAudio.Effectful        qualified as UA
 import ChessExample.Sounds
+import UnifiedAudio.Effectful (Status(Playing))
 
 playSound :: ECS (World s) :> es => Sound -> UA.Times -> Eff es ()
 playSound sound times = newEntity_ $ SoundRequest sound Start times
@@ -63,8 +64,7 @@ audioSystem sounds = do
 
     channel         <- UA.play (toLoadedSound sound) times
     UA.setVolume channel finalVolume
-    e               <- newEntity (PlayingChannel channel, BaseVolume baseVolume)
-    UA.onFinished channel (\_ -> set e (Not @(PlayingChannel s))) 
+    _               <- newEntity (PlayingChannel channel, BaseVolume baseVolume)
     return $ Not @SoundRequest
   
   -- React to Master Gain changes
@@ -75,6 +75,13 @@ audioSystem sounds = do
     MasterGain gain <- get global
     cmapM_ $ \(PlayingChannel channel, BaseVolume base) -> do
       UA.setVolume channel (mulVol base gain)
+  
+  -- Remove finished channels
+  cmapM $ \mapped@(PlayingChannel channel, BaseVolume _) -> do
+    finished <- UA.hasFinished channel
+    if finished
+      then pure $ Left  (Not @(PlayingChannel s), Not @BaseVolume)
+      else pure $ Right mapped
 
   where
     toLoadedSound s = case s of

@@ -34,6 +34,9 @@ type All s =
     )
     , SoundRequest
     , PlayingChannel s
+    , MasterGain
+    , SetMasterGain
+    , BaseVolume
   )
 
 data World s = World
