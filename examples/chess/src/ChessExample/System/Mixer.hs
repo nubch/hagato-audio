@@ -4,13 +4,12 @@ module ChessExample.System.Mixer where
 import Apecs.Effectful                    -- ECS (World s) helpers
 import Effectful                --(Eff, (:>))
 
-import Control.Monad (void, unless)
+import Control.Monad (unless)
 import Data.Typeable (Typeable)
 import ChessExample.System.World     (World)
 import ChessExample.Component.Audio  
 import UnifiedAudio.Effectful        qualified as UA
 import ChessExample.Sounds
-import UnifiedAudio.Effectful (Status(Playing))
 
 playSound :: ECS (World s) :> es => Sound -> UA.Times -> Eff es ()
 playSound sound times = newEntity_ $ SoundRequest sound Start times
@@ -74,6 +73,7 @@ audioSystem sounds = do
     set global (MasterGain newGain)
     MasterGain gain <- get global
     cmapM_ $ \(PlayingChannel channel, BaseVolume base) -> do
+      liftIO $ putStrLn $ "Updating channel volume"
       UA.setVolume channel (mulVol base gain)
   
   -- Remove finished channels

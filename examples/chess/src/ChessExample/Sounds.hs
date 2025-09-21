@@ -15,12 +15,12 @@ data Sounds s = Sounds
 
 initSounds :: (UA.Audio s :> es) => Eff es (Sounds s)
 initSounds = do
-  move          <- UA.load "examples/chess/assets/sounds/playPiece.wav"
-  knightMove    <- UA.load "examples/chess/assets/sounds/horseMove.wav"
-  select        <- UA.load "examples/chess/assets/sounds/playPiece.wav"
-  capture       <- UA.load "examples/chess/assets/sounds/playPiece.wav"
-  win           <- UA.load "examples/chess/assets/sounds/playPiece.wav"
-  music         <- UA.load "examples/chess/assets/sounds/music.mp3"
+  move          <- UA.loadFile "examples/chess/assets/sounds/playPiece.wav" UA.Stereo
+  knightMove    <- UA.loadFile "examples/chess/assets/sounds/horseMove.wav" UA.Stereo
+  select        <- UA.loadFile "examples/chess/assets/sounds/playPiece.wav" UA.Stereo
+  capture       <- UA.loadFile "examples/chess/assets/sounds/playPiece.wav" UA.Stereo
+  win           <- UA.loadFile "examples/chess/assets/sounds/playPiece.wav" UA.Stereo
+  music         <- UA.loadFile "examples/chess/assets/sounds/music.mp3"     UA.Stereo
   return $ Sounds {
     moveSound    = move,
     knightMove   = knightMove,
