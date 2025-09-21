@@ -57,6 +57,8 @@ data World s = World
   , masterGain     :: Storage MasterGain
   , setMasterGain  :: Storage SetMasterGain
   , baseVolume     :: Storage BaseVolume
+  , sfxGroup       :: Storage (SFXGroup s)
+  , musicGroup     :: Storage (MusicGroup s)
   }
 
 instance Monad m => Has (World s) m Camera where
@@ -95,6 +97,12 @@ instance Monad m => Has (World s) m SoundRequest where
 instance Monad m => Has (World s) m (PlayingChannel s) where
   getStore = SystemT (asks playingChannel)
 
+instance Monad m => Has (World s) m (SFXGroup s) where
+  getStore = SystemT (asks sfxGroup)
+
+instance Monad m => Has (World s) m (MusicGroup s) where
+  getStore = SystemT (asks musicGroup)
+
 instance Monad m => Has (World s) m EntityCounter where
    getStore = SystemT (asks entityCounter)
 
@@ -124,6 +132,8 @@ initWorld =
   <*> explInit  
   <*> explInit  
   <*> explInit  
+  <*> explInit  
+  <*> explInit
   <*> explInit  
   <*> explInit
 

@@ -51,7 +51,7 @@ play meshFactory command = do
           let sound = if piece.type' `equals` Knight
                 then Audio.KnightMove
                 else Audio.Move
-          Mixer.playSound sound Once
+          Mixer.playSound sound Once Audio.SFXgrp
           index <- get global
           forM_ (lookupPiece piece.position index) $ \e -> do
             cmap $ removePiece piece.position

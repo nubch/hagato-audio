@@ -345,8 +345,14 @@ library chess
     , vector
     , unified-audio-hs
     , unified-audio-hs:sdl-impl
+    , unified-audio-hs:fmod-impl
   ghc-options:
       -fplugin=Effectful.Plugin
+
+  extra-libraries: fmod
+  extra-lib-dirs:  /home/chris/unified-audio-hs/unified-audio-hs/fmod/lib/x86_64
+  ghc-options:
+    -optl-Wl,-rpath,/home/chris/unified-audio-hs/unified-audio-hs/fmod/lib/x86_64
 
 test-suite chess-glfw
   import:
@@ -373,3 +379,8 @@ test-suite chess-glfw
     , vector
     , unified-audio-hs
     , unified-audio-hs:sdl-impl
+    , unified-audio-hs:fmod-impl
+  extra-libraries: fmod
+  extra-lib-dirs:  /home/chris/unified-audio-hs/unified-audio-hs/fmod/lib/x86_64
+  ghc-options:
+    -optl-Wl,-rpath,/home/chris/unified-audio-hs/unified-audio-hs/fmod/lib/x86_64

@@ -19,8 +19,11 @@ import Hagato.Core.Math.Vec2 (y)
 
 -- effectful-core
 import Effectful (Eff, (:>))
+import Data.Typeable (Typeable)
+import UnifiedAudio.Effectful qualified as UA
 
 import ChessExample.Component.Mesh   (MeshFactory)
+import ChessExample.Component.Audio
 import ChessExample.GameState        (GameState(game, done))
 import ChessExample.System.Animator  qualified as Animator
 import ChessExample.System.Director  qualified as Director
@@ -32,7 +35,7 @@ import ChessExample.System.World     (World)
 -- The input system maps the input of the window (keyboard, mouse, etc.) to the
 -- game state, thus creating a new game state. It does this by delegating the work
 -- to other systems depending on the input.
-process :: forall es s. ECS (World s) :> es => MeshFactory -> Input -> GameState -> Eff es GameState
+process :: forall es s. (Typeable s, UA.Audio s :> es, ECS (World s) :> es) => MeshFactory -> Input -> GameState -> Eff es GameState
 process meshFactory input initState = do
   Director.moveCursor input.cursor
   foldM handle initState input.events
@@ -42,14 +45,18 @@ process meshFactory input initState = do
         KeyEvent Key'Escape _ _ _ ->
           pure state { done = True }
         -- M     -> Toggle mute.
-        KeyEvent Key'M _ Key'Pressed _ ->
-          Mixer.toggleMute @s >> pure state
-        -- .     -> Raise master volume.
+        -- .     -> Raise music volume.
         KeyEvent Key'Period _ Key'Pressed _ ->
-          Mixer.raiseVolumeMaster @s >> pure state
-        -- ,     -> Lower master volume.
+          Mixer.raiseGroupVolume @s Musicgrp >> pure state
+        -- ,     -> Lower music volume.
         KeyEvent Key'Comma _ Key'Pressed _ ->
-          Mixer.lowerVolumeMaster @s >> pure state
+          Mixer.lowerGroupVolume @s Musicgrp >> pure state
+
+        KeyEvent Key'M _ Key'Pressed _ ->
+          Mixer.raiseGroupVolume @s SFXgrp >> pure state
+        -- ,     -> Lower music volume.
+        KeyEvent Key'N _ Key'Pressed _ ->
+          Mixer.lowerGroupVolume @s SFXgrp >> pure state
         -- Backspace -> Take back last move.
         KeyEvent Key'Backspace _ Key'Pressed _ ->
           case state.game.lastUpdate of

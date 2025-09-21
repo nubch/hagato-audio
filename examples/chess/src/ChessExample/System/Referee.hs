@@ -20,6 +20,7 @@ import ChessExample.Component.Focus (Focus(Lost, Threatened))
 import ChessExample.Component.Index (lookupPiece)
 import ChessExample.Component.Audio
 import ChessExample.System.Mixer    qualified as Mixer
+import ChessExample.Component.Audio qualified as Audio
 import ChessExample.System.World    (World)
 import UnifiedAudio.Effectful (Times(Forever))
 
@@ -37,7 +38,7 @@ judge game =
         setFocus Threatened game.activePlayer index
         setFocus Threatened game.passivePlayer index
     Chess.Win player -> do
-      Mixer.playSound Win Forever
+      Mixer.playSound Win Forever Audio.SFXgrp
       cmapM_ $ setFocus Lost (other player)
   where
     other player
