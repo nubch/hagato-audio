@@ -5,7 +5,6 @@ module ChessExample.System.Input where
 
 -- apecs-effectful
 import Apecs.Effectful (ECS)
-
 -- base
 import Control.Monad (foldM)
 
@@ -45,18 +44,28 @@ process meshFactory input initState = do
         KeyEvent Key'Escape _ _ _ ->
           pure state { done = True }
         -- M     -> Toggle mute.
-        -- .     -> Raise music volume.
-        KeyEvent Key'Period _ Key'Pressed _ ->
-          Mixer.raiseGroupVolume @s Musicgrp >> pure state
-        -- ,     -> Lower music volume.
-        KeyEvent Key'Comma _ Key'Pressed _ ->
-          Mixer.lowerGroupVolume @s Musicgrp >> pure state
+        -- n / N -> Lower/Raise music volume.
+        KeyEvent Key'N _ Key'Pressed mods ->
+          (if mods.shift then Mixer.lowerGroupVolume @s Musicgrp
+           else Mixer.lowerGroupVolume @s SFXgrp) >> pure state
+        -- m / M -> Lower/Raise SFX volume.
+        KeyEvent Key'M _ Key'Pressed mods ->
+          (if mods.shift then Mixer.raiseGroupVolume @s Musicgrp
+           else Mixer.raiseGroupVolume @s SFXgrp) >> pure state
+        -- v / V -> Pan left SFX / Music.
+        KeyEvent Key'V _ Key'Pressed mods ->
+          (if mods.shift then Mixer.nudgeLeft @s Musicgrp
+           else Mixer.nudgeLeft @s SFXgrp) >> pure state
+        -- b / B -> Pan right SFX / Music.
+        KeyEvent Key'B _ Key'Pressed mods ->
+          (if mods.shift then Mixer.nudgeRight @s Musicgrp else Mixer.nudgeRight @s SFXgrp) >> pure state
+        -- p / P -> Toggle pause for SFX / Music.
+        KeyEvent Key'P _ Key'Pressed mods ->
+          (if mods.shift then Mixer.togglePauseGroup @s Musicgrp else Mixer.togglePauseGroup @s SFXgrp) >> pure state
+        -- s / S -> Stop SFX / Stop Music.
+        KeyEvent Key'S _ Key'Pressed mods ->
+          (if mods.shift then Mixer.stopGroup @s Musicgrp else Mixer.stopGroup @s SFXgrp) >> pure state
 
-        KeyEvent Key'M _ Key'Pressed _ ->
-          Mixer.raiseGroupVolume @s SFXgrp >> pure state
-        -- ,     -> Lower music volume.
-        KeyEvent Key'N _ Key'Pressed _ ->
-          Mixer.lowerGroupVolume @s SFXgrp >> pure state
         -- Backspace -> Take back last move.
         KeyEvent Key'Backspace _ Key'Pressed _ ->
           case state.game.lastUpdate of

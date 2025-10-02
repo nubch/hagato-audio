@@ -14,7 +14,7 @@ import ChessExample.Component.Mesh        (Mesh)
 import ChessExample.Component.Screen      (Screen)
 import ChessExample.Component.Transform   (Transform)
 import ChessExample.Component.Audio       
-import UnifiedAudio.Effectful (mute)
+--import UnifiedAudio.Effectful (mute)
 
 -- Type synonym that references all components. Used to delete entities, i.e. to
 -- delete all components of an entity.
@@ -114,6 +114,7 @@ instance Monad m => Has (World s) m SetMasterGain where
   
 instance Monad m => Has (World s) m BaseVolume where
    getStore = SystemT (asks baseVolume)
+
 
 initWorld :: IO (World s)
 initWorld = 
