@@ -1,3 +1,19 @@
+## Audio Integration
+This fork adds a simple audio integration to the chess example using the unified-audio library.
+
+Swapping between the FMOD and SDL implementation can be done in the `Main` module of the chess example.
+
+## Setup
+These instructions expect a linux-based OS with a 64-bit x86 (AMD64) CPU architecture.
+
+First, download the FMOD Engine (2.02.30) for linux from the offical website.
+
+Before running, the placeholders in the .cabal file for the FMOD binaries need to be filled.
+
+Replace `**PATH_TO_x86_64**` with the absolute path to the `libfmod.so` file, that is usually in `/api/core/lib/x86_64`.
+
+Example for a full path: `/home/chris/fmodstudioapi20307linux/api/core/lib/x86_64`
+
 <p align="center">
 <img src="https://raw.githubusercontent.com/typedbyte/hagato/main/logo.png" alt="hagato" title="hagato"/>
 </p>
@@ -34,3 +50,5 @@ package VulkanMemoryAllocator
 ```
 
 The 3D models of the chess pieces and the textures of the chess board fields were created by [Yanez Designs](https://sketchfab.com/3d-models/boris-spassky-vs-robert-james-fischer-game-3-6df15d938f184b87af96fbf7a793248e). The skybox of the 3D scene was borrowed from the [Learn OpenGL cubemap tutorial](https://learnopengl.com/Advanced-OpenGL/Cubemaps). The chess board and its labels are self-made.
+
+
