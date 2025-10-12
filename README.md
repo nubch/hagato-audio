@@ -3,7 +3,7 @@ This fork adds a simple audio integration to the chess example using the unified
 
 Swapping between the FMOD and SDL implementation can be done in the `Main` module of the chess example.
 
-## Setup
+### Setup
 These instructions expect a linux-based OS with a 64-bit x86 (AMD64) CPU architecture.
 
 First, download the FMOD Engine (2.02.30) for linux from the offical website.
