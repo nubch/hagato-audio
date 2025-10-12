@@ -350,10 +350,9 @@ library chess
       -fplugin=Effectful.Plugin
 
   extra-libraries: fmod
-  --extra-lib-dirs: **PATH_TO_x86_64**  
+  extra-lib-dirs: **PATH_TO_x86_64**  
   ghc-options:
-    -optl-Wl,
-    -- -rpath,**PATH_TO_x86_64**
+    -optl-Wl,-rpath,**PATH_TO_x86_64**
 
 test-suite chess-glfw
   import:
@@ -382,7 +381,6 @@ test-suite chess-glfw
     , unified-audio-hs:sdl-impl
     , unified-audio-hs:fmod-impl
   extra-libraries: fmod
-  --extra-lib-dirs: **PATH_TO_x86_64**  
+  extra-lib-dirs: **PATH_TO_x86_64**  
   ghc-options:
-    -optl-Wl,
-    -- -rpath,**PATH_TO_x86_64**
+    -optl-Wl,-rpath,**PATH_TO_x86_64**
