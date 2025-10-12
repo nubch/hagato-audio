@@ -20,9 +20,7 @@ import ChessExample.Component.Focus (Focus(Lost, Threatened))
 import ChessExample.Component.Index (lookupPiece)
 import ChessExample.Component.Audio
 import ChessExample.System.Mixer    qualified as Mixer
-import ChessExample.Component.Audio qualified as Audio
 import ChessExample.System.World    (World)
-import UnifiedAudio.Effectful (Times(Forever))
 
 -- The referee system judges the state of the chess game and sets the focus to
 -- the world entities accordingly (e.g., declares a player the winner by marking
@@ -38,7 +36,7 @@ judge game =
         setFocus Threatened game.activePlayer index
         setFocus Threatened game.passivePlayer index
     Chess.Win player -> do
-      Mixer.playSound Win Forever Audio.SFXgrp
+      Mixer.playSFX Victory
       cmapM_ $ setFocus Lost (other player)
   where
     other player

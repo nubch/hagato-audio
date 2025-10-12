@@ -14,7 +14,6 @@ import ChessExample.Component.Mesh        (Mesh)
 import ChessExample.Component.Screen      (Screen)
 import ChessExample.Component.Transform   (Transform)
 import ChessExample.Component.Audio       
---import UnifiedAudio.Effectful (mute)
 
 -- Type synonym that references all components. Used to delete entities, i.e. to
 -- delete all components of an entity.
@@ -34,31 +33,25 @@ type All s =
     )
     , SoundRequest
     , PlayingChannel s
-    , MasterGain
-    , SetMasterGain
-    , BaseVolume
   )
 
 data World s = World
-  { camera         :: Storage Camera
-  , environment    :: Storage Environment
-  , fadeOut        :: Storage FadeOut
-  , focus          :: Storage Focus
-  , forward        :: Storage Forward
-  , index          :: Storage Index
-  , mesh           :: Storage Mesh
-  , path           :: Storage Path
-  , screen         :: Storage Screen
-  , transform      :: Storage Transform
+  { camera         :: Unique Camera
+  , environment    :: Unique Environment
+  , fadeOut        :: Map FadeOut
+  , focus          :: Map Focus
+  , forward        :: Map Forward
+  , index          :: Unique Index
+  , mesh           :: Map Mesh
+  , path           :: Map Path
+  , screen         :: Unique Screen
+  , transform      :: Map Transform
   , entityCounter  :: Storage EntityCounter
   -- Audio components
-  , soundRequest   :: Storage SoundRequest
-  , playingChannel :: Storage (PlayingChannel s)
-  , masterGain     :: Storage MasterGain
-  , setMasterGain  :: Storage SetMasterGain
-  , baseVolume     :: Storage BaseVolume
-  , sfxGroup       :: Storage (SFXGroup s)
-  , musicGroup     :: Storage (MusicGroup s)
+  , soundRequest   :: Map SoundRequest
+  , playingChannel :: Map (PlayingChannel s)
+  , sfxGroup       :: Storage  (SFXGroup s)
+  , musicGroup     :: Storage  (MusicGroup s)
   }
 
 instance Monad m => Has (World s) m Camera where
@@ -92,6 +85,7 @@ instance Monad m => Has (World s) m Transform where
   getStore = SystemT (asks transform)
 
 instance Monad m => Has (World s) m SoundRequest where
+  getStore :: Monad m => SystemT (World s) m (Storage SoundRequest)
   getStore = SystemT (asks soundRequest)
 
 instance Monad m => Has (World s) m (PlayingChannel s) where
@@ -100,55 +94,27 @@ instance Monad m => Has (World s) m (PlayingChannel s) where
 instance Monad m => Has (World s) m (SFXGroup s) where
   getStore = SystemT (asks sfxGroup)
 
-instance Monad m => Has (World s) m (MusicGroup s) where
+instance (Monad m) => Has (World s) m (MusicGroup s)  where
   getStore = SystemT (asks musicGroup)
 
-instance Monad m => Has (World s) m EntityCounter where
+instance (Monad m) => Has (World s) m EntityCounter where
    getStore = SystemT (asks entityCounter)
-
-instance Monad m => Has (World s) m MasterGain where
-   getStore = SystemT (asks masterGain)
-
-instance Monad m => Has (World s) m SetMasterGain where
-   getStore = SystemT (asks setMasterGain)
   
-instance Monad m => Has (World s) m BaseVolume where
-   getStore = SystemT (asks baseVolume)
-
-
 initWorld :: IO (World s)
-initWorld = 
-  World 
-  <$> explInit
-  <*> explInit
-  <*> explInit
-  <*> explInit
-  <*> explInit
-  <*> explInit
-  <*> explInit
-  <*> explInit
-  <*> explInit
-  <*> explInit
-  <*> explInit
-  <*> explInit  
-  <*> explInit  
-  <*> explInit  
-  <*> explInit  
-  <*> explInit
-  <*> explInit  
-  <*> explInit
-
---makeWorld "World"
-  --[ ''Camera
-  --, ''Environment
-  --, ''FadeOut
-  --, ''Focus
-  --, ''Forward
-  --, ''Index
-  --, ''Mesh
-  --, ''Path
-  --, ''Screen
-  --, ''Transform,
-    ---- Audio components
-    --''SoundRequest
-  --]
+initWorld =
+  World
+  <$> explInit -- Unique Camera
+  <*> explInit -- Unique Environment
+  <*> explInit -- Map FadeOut
+  <*> explInit -- Map Focus
+  <*> explInit -- Map Forward
+  <*> explInit -- Unique Index
+  <*> explInit -- Map Mesh
+  <*> explInit -- Map Path
+  <*> explInit -- Unique Screen
+  <*> explInit -- Map Transform
+  <*> explInit -- ReadOnly (Global EntityCounter)
+  <*> explInit -- Map SoundRequest
+  <*> explInit -- Map (PlayingChannel s)
+  <*> explInit -- Global (SFXGroup s)
+  <*> explInit -- Global (MusicGroup s)

@@ -32,7 +32,6 @@ import ChessExample.Component.Transform (Transform(Transform, translation))
 import ChessExample.System.World        (World)
 import ChessExample.System.Mixer        qualified as Mixer
 import ChessExample.Component.Audio     qualified as Audio
-import UnifiedAudio.Effectful (Times(..))
 
 
 -- The player system represents the actions of a chess player. It executes chess
@@ -51,7 +50,7 @@ play meshFactory command = do
           let sound = if piece.type' `equals` Knight
                 then Audio.KnightMove
                 else Audio.Move
-          Mixer.playSound sound Once Audio.SFXgrp
+          Mixer.playSFX sound
           index <- get global
           forM_ (lookupPiece piece.position index) $ \e -> do
             cmap $ removePiece piece.position
