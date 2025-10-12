@@ -43,28 +43,36 @@ process meshFactory input initState = do
         -- Escape -> Exit game loop.
         KeyEvent Key'Escape _ _ _ ->
           pure state { done = True }
-        -- M     -> Toggle mute.
+
         -- n / N -> Lower/Raise music volume.
         KeyEvent Key'N _ Key'Pressed mods ->
           (if mods.shift then Mixer.lowerGroupVolume @s Musicgrp
            else Mixer.lowerGroupVolume @s SFXgrp) >> pure state
+
         -- m / M -> Lower/Raise SFX volume.
         KeyEvent Key'M _ Key'Pressed mods ->
           (if mods.shift then Mixer.raiseGroupVolume @s Musicgrp
            else Mixer.raiseGroupVolume @s SFXgrp) >> pure state
+
         -- v / V -> Pan left SFX / Music.
         KeyEvent Key'V _ Key'Pressed mods ->
           (if mods.shift then Mixer.nudgeLeft @s Musicgrp
            else Mixer.nudgeLeft @s SFXgrp) >> pure state
+
         -- b / B -> Pan right SFX / Music.
         KeyEvent Key'B _ Key'Pressed mods ->
-          (if mods.shift then Mixer.nudgeRight @s Musicgrp else Mixer.nudgeRight @s SFXgrp) >> pure state
+          (if mods.shift then Mixer.nudgeRight @s Musicgrp
+           else Mixer.nudgeRight @s SFXgrp) >> pure state
+
         -- p / P -> Toggle pause for SFX / Music.
         KeyEvent Key'P _ Key'Pressed mods ->
-          (if mods.shift then Mixer.togglePauseGroup @s Musicgrp else Mixer.togglePauseGroup @s SFXgrp) >> pure state
+          (if mods.shift then Mixer.togglePauseGroup @s Musicgrp
+           else Mixer.togglePauseGroup @s SFXgrp) >> pure state
+           
         -- s / S -> Stop SFX / Stop Music.
         KeyEvent Key'S _ Key'Pressed mods ->
-          (if mods.shift then Mixer.stopGroup @s Musicgrp else Mixer.stopGroup @s SFXgrp) >> pure state
+          (if mods.shift then Mixer.stopGroup @s Musicgrp
+           else Mixer.stopGroup @s SFXgrp) >> pure state
 
         -- Backspace -> Take back last move.
         KeyEvent Key'Backspace _ Key'Pressed _ ->
