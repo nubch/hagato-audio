@@ -14,6 +14,8 @@ Replace `**PATH_TO_x86_64**` with the absolute path to the `libfmod.so` file, th
 
 Example for a full path: `/home/chris/fmodstudioapi20307linux/api/core/lib/x86_64`
 
+---
+
 <p align="center">
 <img src="https://raw.githubusercontent.com/typedbyte/hagato/main/logo.png" alt="hagato" title="hagato"/>
 </p>
