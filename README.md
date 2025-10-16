@@ -1,5 +1,5 @@
 ## Audio Integration
-This fork adds a simple audio integration to the chess example using the unified-audio library.
+This fork adds a simple audio integration to the chess example using the [Unified-Audio-Interface](https://github.com/nubch/unified-audio-hs) library.
 
 Swapping between the FMOD and SDL implementation can be done in the `Main` module of the chess example.
 
@@ -14,8 +14,14 @@ Before running, the placeholders in the .cabal file for the FMOD binaries need t
 
 Replace `**PATH_TO_x86_64**` with the absolute path to the `libfmod.so` file, that is usually in `/api/core/lib/x86_64`.
 
-Example for a full path: `/home/chris/fmodstudioapi20307linux/api/core/lib/x86_64`
+You also need a correctly configured local version of the [Unified-Audio-Interface](https://github.com/nubch/unified-audio-hs).
 
+This absolute to the cabal of the interface needs to be configured in your `cabal.project.local`.
+
+For example in your local file:
+```
+packages: /home/chris/unified-audio-hs/unified-audio-hs/*.cabal
+```
 ---
 
 <p align="center">
@@ -54,5 +60,3 @@ package VulkanMemoryAllocator
 ```
 
 The 3D models of the chess pieces and the textures of the chess board fields were created by [Yanez Designs](https://sketchfab.com/3d-models/boris-spassky-vs-robert-james-fischer-game-3-6df15d938f184b87af96fbf7a793248e). The skybox of the 3D scene was borrowed from the [Learn OpenGL cubemap tutorial](https://learnopengl.com/Advanced-OpenGL/Cubemaps). The chess board and its labels are self-made.
-
-

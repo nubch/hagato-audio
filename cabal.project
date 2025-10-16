@@ -1,6 +1,0 @@
-packages: .
-
-source-repository-package
-  type: git
-  location: https://github.com/Keksgurke/unified-audio-hs
-  tag: main    
