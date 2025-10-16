@@ -32,7 +32,7 @@ import qualified Data.Vector as V
 import Vulkan.Core10.FundamentalTypes (Extent2D(height, width))
 
 import qualified SDL.Backend as SDL
---import Fmod.Backend as FMOD
+import Fmod.Backend as FMOD
 
 swapchainToString :: Vk.Swapchain -> String
 swapchainToString swapchain =

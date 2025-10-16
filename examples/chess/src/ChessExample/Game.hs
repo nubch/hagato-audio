@@ -58,7 +58,7 @@ game
   => [String] -> Eff es ()
 game layers =
   evalState 0 . runECS (initWorld @s) $ do
-    window      <- manageWindow 800 600 "Left Click: Play | Right Click: Rotate | Scroll: Zoom | Backspace: Take Back"
+    window      <- manageWindow 800 600 "p / P: Pause | s / S: Stop | v V / b B: Placement | n N / m M: Volume"
     renderSetup <- manageRenderSetup window layers
     allocator   <- manageMemoryAllocator renderSetup
     renderer    <- allocateRenderer renderSetup allocator 3
