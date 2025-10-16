@@ -91,8 +91,9 @@ audioSystem sounds = do
   -- Handle requests for playing sounds
   cmapM $ \(SoundRequest sound loopMode grp) -> do
     group <- resolveGroup grp
+    channel <- UA.play (toLoadedSound sound) loopMode
 
-    channel <- UA.playOnGroup (toLoadedSound sound) group loopMode
+    UA.addToGroup group channel
     newEntity_ (PlayingChannel channel)
 
     return $ Not @SoundRequest
